@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="csv（数据集写入）csv是一种文本格式文件，可直接用excel打开，我用来保存keypoint的数据集，这也是python内置的一个模块。 其实有三种方法：  csv.writer() csv.Dictwriter() writelines()  csv.writer()1234567891011import csvheaders &#x3D; [&amp;#x27;nose&amp;#x27;, &amp;#x27;right">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python:pandas &amp; csv">
+<meta property="og:url" content="http://example.com/2022/08/03/pandas/index.html">
+<meta property="og:site_name" content="Kohlkopf no Qzone">
+<meta property="og:description" content="csv（数据集写入）csv是一种文本格式文件，可直接用excel打开，我用来保存keypoint的数据集，这也是python内置的一个模块。 其实有三种方法：  csv.writer() csv.Dictwriter() writelines()  csv.writer()1234567891011import csvheaders &#x3D; [&amp;#x27;nose&amp;#x27;, &amp;#x27;right">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-08-03T05:40:04.000Z">
+<meta property="article:modified_time" content="2022-08-04T05:49:55.390Z">
+<meta property="article:author" content="Jiangnan CAI">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>python:pandas &amp; csv</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/08/04/binary-search/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/08/01/pp-human/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/08/03/pandas/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/08/03/pandas/&text=python:pandas &amp; csv"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/08/03/pandas/&is_video=false&description=python:pandas &amp; csv"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=python:pandas &amp; csv&body=Check out this article: http://example.com/2022/08/03/pandas/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/08/03/pandas/&name=python:pandas &amp; csv&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/08/03/pandas/&t=python:pandas &amp; csv"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#csv%EF%BC%88%E6%95%B0%E6%8D%AE%E9%9B%86%E5%86%99%E5%85%A5%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">csv（数据集写入）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#csv-writer"><span class="toc-number">1.1.</span> <span class="toc-text">csv.writer()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#csv-Dictwriter"><span class="toc-number">1.2.</span> <span class="toc-text">csv.Dictwriter()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#writelines"><span class="toc-number">1.3.</span> <span class="toc-text">writelines()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.4.</span> <span class="toc-text">具体实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pandas-%E8%AF%BB%E5%8F%96csv%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">pandas(读取csv文件)</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        python:pandas &amp; csv
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Jiangnan CAI</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-08-03T05:40:04.000Z" class="dt-published" itemprop="datePublished">2022-08-03</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="csv（数据集写入）"><a href="#csv（数据集写入）" class="headerlink" title="csv（数据集写入）"></a>csv（数据集写入）</h2><p>csv是一种文本格式文件，可直接用excel打开，我用来保存keypoint的数据集，这也是python内置的一个模块。</p>
+<p>其实有三种方法：</p>
+<ul>
+<li>csv.writer()</li>
+<li>csv.Dictwriter()</li>
+<li>writelines()</li>
+</ul>
+<h3 id="csv-writer"><a href="#csv-writer" class="headerlink" title="csv.writer()"></a>csv.writer()</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line">headers = [<span class="string">&#x27;nose&#x27;</span>, <span class="string">&#x27;right_eye&#x27;</span>, <span class="string">&#x27;left_eye&#x27;</span>, ... ,] <span class="comment">#逗号在csv文件中代表换格</span></span><br><span class="line">rows = [(<span class="number">233.62</span>, <span class="number">164.08</span>, <span class="number">243.25</span>, <span class="number">148.29</span>, <span class="number">224.22</span>, <span class="number">149.58</span>, ...),</span><br><span class="line">	(<span class="number">148.33</span>, <span class="number">182.28</span>, <span class="number">156.37</span>, <span class="number">168.68</span>, <span class="number">141.9</span>, <span class="number">164.13</span>, ...),</span><br><span class="line">	(<span class="number">220.95</span>, <span class="number">211.02</span>, <span class="number">233.0</span>, <span class="number">194.82</span>, <span class="number">210.83</span>, <span class="number">189.28</span>, ...)]</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;keypoint.csv&#x27;</span>, <span class="string">&#x27;w&#x27;</span>, newline=<span class="string">&#x27; &#x27;</span>) <span class="keyword">as</span> f:<span class="comment">#要写中文，可加上&lt;enconding=‘utf8’&gt;</span></span><br><span class="line">	writer = csv.writer(f)</span><br><span class="line">	writer.writerow(headers) <span class="comment">#写入头</span></span><br><span class="line">	writer.writerows(rows) <span class="comment"># 写入多行</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="csv-Dictwriter"><a href="#csv-Dictwriter" class="headerlink" title="csv.Dictwriter()"></a>csv.Dictwriter()</h3><p>数据需要以字典的形式写入到csv文件中，感觉要麻烦一些。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line">headers = [<span class="string">&#x27;nose&#x27;</span>, <span class="string">&#x27;right_eye&#x27;</span>, <span class="string">&#x27;left_eye&#x27;</span>, ... ,] <span class="comment">#逗号在csv文件中代表换格</span></span><br><span class="line">rows = [(<span class="string">&#x27;nose&#x27;</span>:<span class="number">233.62</span>, <span class="string">&#x27;right_eye&#x27;</span>:<span class="number">164.08</span>, <span class="string">&#x27;left_eye&#x27;</span>:<span class="number">243.25</span>, ...),</span><br><span class="line">	(<span class="string">&#x27;nose&#x27;</span>:<span class="number">148.33</span>, <span class="string">&#x27;right_eye&#x27;</span>:<span class="number">182.28</span>, <span class="string">&#x27;left_eye&#x27;</span>:<span class="number">156.37</span>, ...),</span><br><span class="line">	(<span class="string">&#x27;nose&#x27;</span>:<span class="number">220.95</span>, <span class="string">&#x27;right_eye&#x27;</span>:<span class="number">211.02</span>, <span class="string">&#x27;left_eye&#x27;</span>:<span class="number">233.0</span>, ...)]</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;keypoint.csv&#x27;</span>, <span class="string">&#x27;w&#x27;</span>, newline=<span class="string">&#x27; &#x27;</span>) <span class="keyword">as</span> f:<span class="comment">#要写中文，可加上&lt;enconding=‘utf8’&gt;</span></span><br><span class="line">	writer = csv.DictWriter(f, headers) <span class="comment">#参数中多传入了头</span></span><br><span class="line">	writer.writeheader() <span class="comment">#写入头，和之前有所区别</span></span><br><span class="line">	writer.writerows(rows) <span class="comment"># 写入多行</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="writelines"><a href="#writelines" class="headerlink" title="writelines()"></a>writelines()</h3><p>虽然也可以，但是我个人来说不太推荐。</p>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 保留上半身11个关键点的数据，因为下半身大部分都被课桌给挡住了</span></span><br><span class="line">headers = [<span class="string">&#x27;nose_x&#x27;</span>, <span class="string">&#x27;nose_y&#x27;</span>, </span><br><span class="line">	   <span class="string">&#x27;l_eye_x&#x27;</span>, <span class="string">&#x27;l_eye_y&#x27;</span>, </span><br><span class="line">	   <span class="string">&#x27;r_eye_x&#x27;</span>, <span class="string">&#x27;r_eye_y&#x27;</span>,</span><br><span class="line">	   <span class="string">&#x27;l_ear_x&#x27;</span>, <span class="string">&#x27;r_ear_y&#x27;</span>, </span><br><span class="line">	   <span class="string">&#x27;r_ear_x&#x27;</span>, <span class="string">&#x27;r_ear_y&#x27;</span>, </span><br><span class="line">	   <span class="string">&#x27;l_shoulder_x&#x27;</span>, <span class="string">&#x27;l_shoulder_y&#x27;</span>,</span><br><span class="line">	   <span class="string">&#x27;r_shoulder_x&#x27;</span>, <span class="string">&#x27;r_shoulder_y&#x27;</span>, </span><br><span class="line">	   <span class="string">&#x27;l_elbow_x&#x27;</span>, <span class="string">&#x27;l_elbow_y&#x27;</span>, </span><br><span class="line">	   <span class="string">&#x27;r_elbow_x&#x27;</span>, <span class="string">&#x27;r_elbow_y&#x27;</span>,</span><br><span class="line">	   <span class="string">&#x27;l_wrist_x&#x27;</span>, <span class="string">&#x27;l_wrist_y&#x27;</span>, </span><br><span class="line">	   <span class="string">&#x27;r_wrist_x&#x27;</span>, <span class="string">&#x27;r_wrist_y&#x27;</span>,</span><br><span class="line">	   <span class="string">&#x27;label&#x27;</span>]</span><br><span class="line"></span><br><span class="line">csv_file = FLAGS.output_dir + <span class="string">&#x27;/keypoint.csv&#x27;</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(csv_file, <span class="string">&#x27;a&#x27;</span>, newline=<span class="string">&#x27;&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">	writer = csv.writer(f)</span><br><span class="line">	<span class="comment"># 如果是新文件，就要写入header，不是的话，就直接写数据</span></span><br><span class="line">	<span class="keyword">if</span> os.path.getsize(csv_file):</span><br><span class="line">		writer.writerow(data)</span><br><span class="line">	<span class="keyword">else</span>:	</span><br><span class="line">		writer.writerow(headers)</span><br><span class="line">		writer.writerow(data)</span><br></pre></td></tr></table></figure>
+
+<h2 id="pandas-读取csv文件"><a href="#pandas-读取csv文件" class="headerlink" title="pandas(读取csv文件)"></a>pandas(读取csv文件)</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">keypoint_matrix = pd.read_csv(<span class="string">&#x27;keypoint.csv&#x27;</span>, seq=<span class="string">&#x27;,&#x27;</span>) <span class="comment"># 这个是不包括header的</span></span><br><span class="line">label = keypoint_matrix[<span class="string">&#x27;label&#x27;</span>]</span><br><span class="line">data = data.drop([<span class="string">&quot;label&quot;</span>], axis=<span class="number">1</span>) <span class="comment"># 将label这一列删除，axis=1是列，axis=0是行</span></span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#csv%EF%BC%88%E6%95%B0%E6%8D%AE%E9%9B%86%E5%86%99%E5%85%A5%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">csv（数据集写入）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#csv-writer"><span class="toc-number">1.1.</span> <span class="toc-text">csv.writer()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#csv-Dictwriter"><span class="toc-number">1.2.</span> <span class="toc-text">csv.Dictwriter()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#writelines"><span class="toc-number">1.3.</span> <span class="toc-text">writelines()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.4.</span> <span class="toc-text">具体实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pandas-%E8%AF%BB%E5%8F%96csv%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">pandas(读取csv文件)</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/08/03/pandas/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/08/03/pandas/&text=python:pandas &amp; csv"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/08/03/pandas/&is_video=false&description=python:pandas &amp; csv"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=python:pandas &amp; csv&body=Check out this article: http://example.com/2022/08/03/pandas/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/08/03/pandas/&title=python:pandas &amp; csv"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/08/03/pandas/&name=python:pandas &amp; csv&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/08/03/pandas/&t=python:pandas &amp; csv"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    Jiangnan CAI
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
