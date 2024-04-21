@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Two SumGiven an array of integers, return indices of the two numbers such that they add up to a specific target.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode">
+<meta property="og:url" content="http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Kohlkopf no Qzone">
+<meta property="og:description" content="Two SumGiven an array of integers, return indices of the two numbers such that they add up to a specific target.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-31T06:10:49.000Z">
+<meta property="article:modified_time" content="2022-07-28T15:20:24.760Z">
+<meta property="article:author" content="Jiangnan CAI">
+<meta property="article:tag" content="leetcode">
+<meta property="article:tag" content="哈希表">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>leetcode</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Kohlkopf no Qzone" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2021/05/04/%E3%80%8C%E6%97%85%E8%A1%8C%E3%80%8D%E4%BA%94%E4%B8%80%E5%81%87%E6%9C%9F/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2020/07/08/%E3%80%8C%E7%94%9F%E6%B4%BB%E3%80%8D%E7%BB%88%E4%BA%8E%E4%B8%8A%E7%8E%8B%E8%80%85%E4%BA%86%EF%BC%81%EF%BC%81%EF%BC%81/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&text=leetcode"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&is_video=false&description=leetcode"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=leetcode&body=Check out this article: http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&name=leetcode&description=&lt;h2 id=&#34;Two-Sum&#34;&gt;&lt;a href=&#34;#Two-Sum&#34; class=&#34;headerlink&#34; title=&#34;Two Sum&#34;&gt;&lt;/a&gt;Two Sum&lt;/h2&gt;&lt;p&gt;Given an array of integers, return indices of the two numbers such that they add up to a specific target.&lt;br&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&t=leetcode"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Two-Sum"><span class="toc-number">1.</span> <span class="toc-text">Two Sum</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#brust-force"><span class="toc-number">1.1.</span> <span class="toc-text">brust force</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#two-pass-hash-tabel"><span class="toc-number">1.2.</span> <span class="toc-text">two pass hash tabel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#one-pass-hash-table"><span class="toc-number">1.3.</span> <span class="toc-text">one pass hash table</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number"></span> <span class="toc-text"></span></a>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        leetcode
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Jiangnan CAI</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-07-31T06:10:49.000Z" class="dt-published" itemprop="datePublished">2020-07-31</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E7%A0%81%E5%86%9C%E5%85%BB%E6%88%90/">码农养成</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/leetcode/" rel="tag">leetcode</a>, <a class="p-category" href="/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/" rel="tag">哈希表</a>, <a class="p-category" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="Two-Sum"><a href="#Two-Sum" class="headerlink" title="Two Sum"></a>Two Sum</h2><p>Given an array of integers, return indices of the two numbers such that they add up to a specific target.<br> <span id="more"></span><br>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
+<p>个人思路：现在我的想法是暴力解法，直接进行遍历</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class Solution&#123;</span><br><span class="line">	public int[] twoSum(int[] nums, int target)&#123;</span><br><span class="line">		for(int i = 0; i &lt; nums.length; i++)&#123;</span><br><span class="line">			for(int j = i + 1; j &lt; nums.length; j++)&#123;</span><br><span class="line">				int a = nums[i];</span><br><span class="line">				int b = nums[j];</span><br><span class="line">				if (a + b == target)&#123;</span><br><span class="line">					return (i,j); // return new int[] &#123;i,j&#125;</span><br><span class="line">					//返回的是内存地址</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		// throw new IllegalArgumentException(&quot;No two sum solution&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>反思：没有考虑异常状况，返回值返回的是内存地址吗？</p>
+<h3 id="brust-force"><a href="#brust-force" class="headerlink" title="brust force"></a>brust force</h3><p>同上</p>
+<h3 id="two-pass-hash-tabel"><a href="#two-pass-hash-tabel" class="headerlink" title="two pass hash tabel"></a>two pass hash tabel</h3><p>为了提升时间复杂度，应该用更高效的方式确定数组里是否有满足条件的数，如果这个数存在，我们要得到他的index。<br>hash表就能够很好的将index和数据连接在一起，相当于减少了一个嵌套循环</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Solution&#123;</span><br><span class="line">	public int[] twoSum(int[] nums, int target)&#123;</span><br><span class="line">		hashmap&lt;integer,integer&gt; map = new hashmap();</span><br><span class="line">		for(int i = 0; i &lt;  nums.length; i++)&#123;</span><br><span class="line">			map.put(nums[i],i);</span><br><span class="line">		&#125;</span><br><span class="line">		for(int i = 0; i &lt; nums.length; i++)&#123;</span><br><span class="line">			int temp = target - nums[i];</span><br><span class="line">			if (map.containKey(temp) &amp;&amp; temp != nums[i])&#123;</span><br><span class="line">				return int new[] &#123;i, map.get(temp)&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对了一下答案，要改的太多了…<br>第三行：hashmap的对象创建，其中Integer是大写，关键字HashMap也要注意写法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Integer, Integer&gt; map = new HashMap&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<p>第九行：map.containsKey，求value的key，contain后面是有s的，<br>map.containsKey(key)是在整个hashmap寻找是否存在这个key。<br>还是漏写了异常抛出</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class Solution&#123;</span><br><span class="line">	public int[] twoSum(int[] nums, int target)&#123;</span><br><span class="line">		HashMap&lt;Integer,Integer&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">		for(int i = 0;  i&lt; nums.length; i++)&#123;</span><br><span class="line">			map.put(nums[i],i);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		for(int i = 0; i&lt; nums.length;i++)&#123;</span><br><span class="line">			int temp = target - nums[i];</span><br><span class="line">			if (map.containsKey(temp) &amp;&amp; map.get(temp)!= i)&#123;</span><br><span class="line">				return new int[] &#123;i,map.get(temp)&#125;;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		throw new IllegalArgumentException(&quot;no two sum solution&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="one-pass-hash-table"><a href="#one-pass-hash-table" class="headerlink" title="one pass hash table"></a>one pass hash table</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Solution&#123;</span><br><span class="line">	public int[] twoSum(int[] nums, int target)&#123;</span><br><span class="line">		HashMap&lt;Integer,Integer&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">		for(int i = 0; i &lt; nums.length; i++)&#123;</span><br><span class="line">			int temp = target - nums[i];</span><br><span class="line">			if( map.containsKey(temp) &amp;&amp; map.get(temp) != i)&#123;</span><br><span class="line">				return new int[] &#123;i, map.get(temp)&#125;;</span><br><span class="line">			&#125;</span><br><span class="line">			map.put(nums[i],i);</span><br><span class="line">		&#125;</span><br><span class="line">		throw new IllegalArgumentException(&quot;no two sum solution&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第六行：不需要后面那部分，只要</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if( map.containsKey(temp))</span><br></pre></td></tr></table></figure>
+<p>不需要判断重复部分吗？</p>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Two-Sum"><span class="toc-number">1.</span> <span class="toc-text">Two Sum</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#brust-force"><span class="toc-number">1.1.</span> <span class="toc-text">brust force</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#two-pass-hash-tabel"><span class="toc-number">1.2.</span> <span class="toc-text">two pass hash tabel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#one-pass-hash-table"><span class="toc-number">1.3.</span> <span class="toc-text">one pass hash table</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number"></span> <span class="toc-text"></span></a>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&text=leetcode"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&is_video=false&description=leetcode"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=leetcode&body=Check out this article: http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&title=leetcode"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&name=leetcode&description=&lt;h2 id=&#34;Two-Sum&#34;&gt;&lt;a href=&#34;#Two-Sum&#34; class=&#34;headerlink&#34; title=&#34;Two Sum&#34;&gt;&lt;/a&gt;Two Sum&lt;/h2&gt;&lt;p&gt;Given an array of integers, return indices of the two numbers such that they add up to a specific target.&lt;br&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2020/07/31/leetcode%E7%AC%94%E8%AE%B0/&t=leetcode"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    Jiangnan CAI
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

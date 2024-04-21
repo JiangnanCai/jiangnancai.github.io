@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="前言最近因为某些原因，要搞行为识别（action recognition），刚好看了YoloPose这篇文章，但是网上看到的中文资料不多，基本都是一篇文章复制粘贴，所以在这里抛砖引玉，写一篇从头开始接触的笔记。 现在源码前端时间已经在github上开源了：YoloPose 但是一开始我直接以git clone的方式下载源码，发现只能够下载到Yolov5的源码，里面没有任何和YoloPose相关的文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YoloPose onnx 视频推理">
+<meta property="og:url" content="http://example.com/2022/07/29/YoloPose/index.html">
+<meta property="og:site_name" content="Kohlkopf no Qzone">
+<meta property="og:description" content="前言最近因为某些原因，要搞行为识别（action recognition），刚好看了YoloPose这篇文章，但是网上看到的中文资料不多，基本都是一篇文章复制粘贴，所以在这里抛砖引玉，写一篇从头开始接触的笔记。 现在源码前端时间已经在github上开源了：YoloPose 但是一开始我直接以git clone的方式下载源码，发现只能够下载到Yolov5的源码，里面没有任何和YoloPose相关的文">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-07-29T07:17:02.000Z">
+<meta property="article:modified_time" content="2022-07-29T08:34:15.120Z">
+<meta property="article:author" content="Jiangnan CAI">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="计算机视觉">
+<meta property="article:tag" content="姿态识别">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>YoloPose onnx 视频推理</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Kohlkopf no Qzone" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/08/04/binary-search/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2021/05/04/%E3%80%8C%E6%97%85%E8%A1%8C%E3%80%8D%E4%BA%94%E4%B8%80%E5%81%87%E6%9C%9F/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/29/YoloPose/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/29/YoloPose/&text=YoloPose onnx 视频推理"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/29/YoloPose/&is_video=false&description=YoloPose onnx 视频推理"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=YoloPose onnx 视频推理&body=Check out this article: http://example.com/2022/07/29/YoloPose/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/29/YoloPose/&name=YoloPose onnx 视频推理&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/29/YoloPose/&t=YoloPose onnx 视频推理"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E8%B7%91%E4%B8%80%E4%B8%8Bdemo"><span class="toc-number">2.</span> <span class="toc-text">先跑一下demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="toc-number">3.</span> <span class="toc-text">模型的输入输出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5"><span class="toc-number">3.1.</span> <span class="toc-text">输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA"><span class="toc-number">3.2.</span> <span class="toc-text">输出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YoloPose%E8%A7%86%E9%A2%91%E6%8E%A8%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">YoloPose视频推理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E8%A7%86%E9%A2%91"><span class="toc-number">4.1.</span> <span class="toc-text">输入视频</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E4%BF%A1%E6%81%AF"><span class="toc-number">4.2.</span> <span class="toc-text">获取视频信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E8%A7%86%E9%A2%91%E9%85%8D%E7%BD%AE"><span class="toc-number">4.3.</span> <span class="toc-text">输出视频配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%90%E5%B8%A7%E5%A4%84%E7%90%86"><span class="toc-number">4.4.</span> <span class="toc-text">逐帧处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">5.</span> <span class="toc-text">完整代码</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        YoloPose onnx 视频推理
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Jiangnan CAI</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-07-29T07:17:02.000Z" class="dt-published" itemprop="datePublished">2022-07-29</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%A7%BF%E6%80%81%E8%AF%86%E5%88%AB/" rel="tag">姿态识别</a>, <a class="p-category" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a>, <a class="p-category" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag">计算机视觉</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近因为某些原因，要搞行为识别（action recognition），刚好看了YoloPose这篇文章，但是网上看到的中文资料不多，基本都是一篇文章复制粘贴，所以在这里抛砖引玉，写一篇从头开始接触的笔记。</p>
+<p>现在源码前端时间已经在github上开源了：<a target="_blank" rel="noopener" href="https://github.com/TexasInstruments/edgeai-yolov5/tree/yolo-pose">YoloPose</a></p>
+<p>但是一开始我直接以git clone的方式下载源码，发现只能够下载到Yolov5的源码，里面没有任何和YoloPose相关的文件，我很疑惑，但是看线上仓库里文件确实不太一样，于是我直接下载压缩包，终于得到了新加的文件：</p>
+<ul>
+<li>test.py：应该是用来训练YoloPose的代码</li>
+<li>onnx_inference &#x2F; yolo_pose_onnx_inference.py：用于onnx推理的代码</li>
+<li>detect.py：用于pytorch推理的代码（这个之后讲）</li>
+</ul>
+<p>这篇博文主要做了以下工作：</p>
+<ul>
+<li>YoloPose的onnx推理代码添加video视频推理函数</li>
+<li>解决非模型标准尺寸输入，造成的检测框和keypoint坐标偏移</li>
+</ul>
+<h2 id="先跑一下demo"><a href="#先跑一下demo" class="headerlink" title="先跑一下demo"></a>先跑一下demo</h2><p>想要尝尝鲜跑一下demo的话</p>
+<ul>
+<li>安装依赖<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure></li>
+<li>下载模型文件：<a target="_blank" rel="noopener" href="http://software-dl.ti.com/jacinto7/esd/modelzoo/gplv3/latest/edgeai-yolov5/pretrained_models/models/keypoint/coco/edgeai-yolov5/yolov5s6_pose_640_ti_lite_54p9_82p2.onnx">model</a>（这是德州仪器处理过的轻量化onnx模型，仓库里还有很多别pytorch模型可供下载）</li>
+<li>进入onnx_inference文件内，运行命令：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python yolo_pose_onnx_inference.py --img-path ./sample_ips.txt --model-path yolov5s6_pose_640_ti_lite_54p9_82p2.onnx</span><br></pre></td></tr></table></figure>
+这样就能在onnx_inference&#x2F;sample_ops_onnxrt文件夹内看到生成的结果图片了，还有储存在检测框信息的txt文档了。</li>
+</ul>
+<p>如果想要跑自己的照片的话，要确保自己的照片resize到 640 x 604 的大小，还得是png格式，然后将照片的路径写到 sample_ips.txt 这个文本里。其实我也不确定前面是不是一定要这样，但是我这里不这样做的话，感觉画出来的关键点和检测框都会偏移。</p>
+<p>感觉在后处理的时候，没有根据缩放对坐标点进行重新映射。</p>
+<p>目前为止，至少在2022.07.22日的时候，官方只给出了图片推理的代码，没有给出视频推理的代码。因为项目要求，我觉得还是得搞一下。</p>
+<h2 id="模型的输入输出"><a href="#模型的输入输出" class="headerlink" title="模型的输入输出"></a>模型的输入输出</h2><p>因为要利用它来实现视频推理，网络内部姑且不管，把它当成一个黑箱，但是推理的输入输出还是要搞清楚的。（如果想看YoloPose原理的其实可以移步了）</p>
+<h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">read_img</span>(<span class="params">img_file, img_mean=<span class="number">127.5</span>, img_scale=<span class="number">1</span>/<span class="number">127.5</span></span>):</span><br><span class="line">	img = cv2.imread(img_file)[:,:,::-<span class="number">1</span>] 	<span class="comment"># bgr-&gt;rgb，对通道进行翻转</span></span><br><span class="line">	img = cv2.resize(img, (<span class="number">640</span>, <span class="number">640</span>), interpolation=cv2.INTER_LINEAR)</span><br><span class="line">	img = (img - img_mean) * img_scale 		<span class="comment"># 像素归一化</span></span><br><span class="line">	img = np.asarray(img, dtype=np.float32) <span class="comment"># 转成float32位的数组</span></span><br><span class="line">	img = np.expand_dims(img, <span class="number">0</span>)			<span class="comment"># 在axis=0处加入一个维度，img.shape=(1,640,640,3)</span></span><br><span class="line">	img = img.transpose(<span class="number">0</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>)			<span class="comment"># 调整维度顺序：（batchsize，channel，height，width）</span></span><br><span class="line">	<span class="keyword">return</span> img</span><br></pre></td></tr></table></figure>
+<p>可以看出来，就是正常推理前图片预处理过程。</p>
+<p>我们知道<code>model_inference(model_path, input)</code>就是将预处理过的图片送进网络推理的函数，所以也不用管它，只要知道输入就是一个模型的地址<code>model_path</code>和一个四维度的图片数据<code>input</code>就行了。</p>
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><p>我们需要关注的是推理之后得到的输出信息。</p>
+<p><code>output</code>通过打印信息，大概知道是一个list，现在的情况list内只有一个<code>array</code>，因为我们的<code>batchsize=1</code>（预处理阶段新加的维度），就是说我们每次送进网络进行推理的照片只有一张，如果我们一次一起送很多张照片进网络的话：list的结果应该是<code>[array_1, array_2, ..., array_n]</code>，每一个<code>array</code>都代表着一张照片的信息。</p>
+<p>因为<code>batchsize=1</code>，直接取<code>output[0]</code>来进行后续处理。<code>output[0]</code>讲道理就是<code>numpy.nadarray</code>类型的数据，里面包含了单张图片的全部信息。就拿github仓库里那两只人陪狗玩的测试图片来举例吧。这个<code>array</code>的维度将会是<code>(2, 57)</code>，就是<code>output[0].shape = (2, 57)</code>，因为，图里检测到<code>2</code>个人的骨架关键点，而描述一个人的骨架各种信息，需要<code>57</code>个数据去描述。下面我会对这个<code>57</code>个元素的含义一一进行讲解。</p>
+<ul>
+<li><code>[0:4]</code>：检测框的box（4）</li>
+<li><code>[4]</code>：检测框分数（1）</li>
+<li><code>[5]</code>：检测目标的标签（1）</li>
+<li><code>[6:]</code>：人的关键点有17个，每个关键点都是<code>(x, y, conf)</code>组成的（51）</li>
+</ul>
+<p>这样就刚刚好将全部元素都分配完成了。看来onnx的预训练模型已经包含了nms的模块。（当然，你也可以将官方提供的pytorch模型转成onnx模型，但是使用export.py转的时候，需要带上包含nms模块的选项，不知道为啥，我想转成带nms模快的onnx模型老是报错，之后有时间处理一下。）</p>
+<p>搞清楚输入和输出之后，就可以利用它们来写我们的视频推理代码了。</p>
+<h2 id="YoloPose视频推理"><a href="#YoloPose视频推理" class="headerlink" title="YoloPose视频推理"></a>YoloPose视频推理</h2><p>我这部分代码是参考PP-human写的</p>
+<h3 id="输入视频"><a href="#输入视频" class="headerlink" title="输入视频"></a>输入视频</h3><p>视频推理也分两种</p>
+<ul>
+<li>摄像头输入</li>
+<li>视频文件输入</li>
+</ul>
+<p>第一步肯定是输入视频和准备输出文件夹：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> camera_id != -<span class="number">1</span>:</span><br><span class="line">	video_name = <span class="string">&#x27;output.mp4&#x27;</span> 					<span class="comment"># 先给个输出视频名字</span></span><br><span class="line">	capture = cv2.VideoCapture(camera_id)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">	video_name = os.path.split(video_file)[-<span class="number">1</span>]	<span class="comment"># 直接原文件名输出</span></span><br><span class="line">	capture = cv2.VideoCaprure(video_file)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(output_dir):</span><br><span class="line">	os.makedirs(output_dir)</span><br><span class="line">out_path = os.path.join(output_dir, video_name)</span><br></pre></td></tr></table></figure>
+<p>从这里知道，参数列表里一定要有<code>camera_id</code>摄像头设备编号和<code>video_file</code>视频输入路径，和视频输出路径<code>output_dir</code>。</p>
+<h3 id="获取视频信息"><a href="#获取视频信息" class="headerlink" title="获取视频信息"></a>获取视频信息</h3><p>包括长宽，fps（每秒几帧），总帧数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">width = <span class="built_in">int</span>(capture.get(cv2.CAP_PROP_FRAME_WIDTH))</span><br><span class="line">height = <span class="built_in">int</span>(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))</span><br><span class="line">fps = <span class="built_in">int</span>(capture.get(cv2.CAP_PROP_FPS))</span><br><span class="line">frame_count = <span class="built_in">int</span>(capture.get(cv2.CAP_PROP_FRAME_COUNT))</span><br></pre></td></tr></table></figure>
+<h3 id="输出视频配置"><a href="#输出视频配置" class="headerlink" title="输出视频配置"></a>输出视频配置</h3><p>利用原视频的配置，来对要保存的视频进行配置：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fourcc = cv2.VideoWriter_fourcc(* <span class="string">&#x27;mp4v&#x27;</span>)	<span class="comment"># 规定输出视频格式</span></span><br><span class="line">writer= cv2.VideoWriter(out_path, fourcc, fps, (width heiht))</span><br></pre></td></tr></table></figure>
+
+<h3 id="逐帧处理"><a href="#逐帧处理" class="headerlink" title="逐帧处理"></a>逐帧处理</h3><p>接下来就要开始正式对视频进行处理，逐帧送进网络里进行推理了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">index = <span class="number">0</span> <span class="comment"># 用于记录帧数</span></span><br><span class="line"><span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">	success, frame = capture.read() <span class="comment"># 一帧帧的读取，帧为bgr格式的</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> success: <span class="keyword">break</span></span><br><span class="line">	index += <span class="number">1</span></span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&#x27;detect frame: %d&#x27;</span> % (index))</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 将frame输入网络中，在这之前，我们要对frame进行一些图象预处理</span></span><br><span class="line">	<span class="comment"># 和read_img的操作一样，直接抄过来就好了</span></span><br><span class="line">	<span class="comment"># 将img_mean和img_scale都直接用实数表示了</span></span><br><span class="line">	img = frame[:,:,::-<span class="number">1</span>] 	<span class="comment"># bgr-&gt;rgb，对通道进行翻转</span></span><br><span class="line">	<span class="comment"># 图片被线性拉伸或者压缩了，后面要进行坐标的重新映射</span></span><br><span class="line">	img = cv2.resize(img, (<span class="number">640</span>, <span class="number">640</span>), interpolation=cv2.INTER_LINEAR)</span><br><span class="line">	img = (img - <span class="number">127.5</span>) * (<span class="number">1</span>/<span class="number">127.5</span>) 		<span class="comment"># 像素归一化</span></span><br><span class="line">	img = np.asarray(img, dtype=np.float32) <span class="comment"># 转成float32位的数组</span></span><br><span class="line">	img = np.expand_dims(img, <span class="number">0</span>)			<span class="comment"># 在axis=0处加入一个维度，img.shape=(1,640,640,3)</span></span><br><span class="line">	frame = img.transpose(<span class="number">0</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>)			<span class="comment"># 调整维度顺序：（batchsize，channel，height，width）</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 因为也是一张张的传进去推理的，所以batchsize=1</span></span><br><span class="line">	output = model_inference(model_path, frame) <span class="comment"># 这意味着，参数里也要有model_path</span></span><br><span class="line">	<span class="comment"># 判断该帧是否有目标，没有目标的话，就直接原样输出该帧</span></span><br><span class="line">	<span class="keyword">if</span> output[<span class="number">0</span>].shape[<span class="number">0</span>] == <span class="number">0</span>:</span><br><span class="line">		writer.write(frame)</span><br><span class="line">		<span class="keyword">continue</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 有目标的话就对图片进行后处理</span></span><br><span class="line">	det_bboxes = output[<span class="number">0</span>][:, <span class="number">0</span>:<span class="number">4</span>]</span><br><span class="line">	det_scores = output[<span class="number">0</span>][<span class="number">4</span>]</span><br><span class="line">	det_labels = output[<span class="number">0</span>][<span class="number">5</span>]</span><br><span class="line">	kpts = output[<span class="number">0</span>][:, <span class="number">6</span>:]</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(det_bboxes)):</span><br><span class="line">		det_bbox = det_bboxes[idx]		<span class="comment"># 选取一个目标的检测框</span></span><br><span class="line">		kpt = kpts[idx] 				<span class="comment"># 选取其对应的关键点数据</span></span><br><span class="line">		<span class="keyword">if</span> det_scores[idx] &gt; score_threshold: <span class="comment"># 参数列表里还得有score_threshold</span></span><br><span class="line">			color_map = _CLASS_COLOR_MAP[<span class="built_in">int</span>(det_labels[idx])]</span><br><span class="line">			<span class="comment"># 这里要对坐标进行转换，已知视频的height和width，变换后为640，可知：</span></span><br><span class="line">			<span class="comment"># 真实坐标truth = now * original_size / 640</span></span><br><span class="line">			<span class="comment"># 画识别框</span></span><br><span class="line">			start_point = (det_bbox[<span class="number">0</span>]*width / <span class="number">640</span>, det_bbox[<span class="number">1</span>]*height / <span class="number">640</span>)</span><br><span class="line">			end_point = (det_bbox[<span class="number">2</span>]*width / <span class="number">640</span>, det_bbox[<span class="number">3</span>]*height / <span class="number">640</span>)</span><br><span class="line">			frame = cv2.rectangle(frame, start_point, end_point, color_map[::-<span class="number">1</span>],<span class="number">2</span>)</span><br><span class="line">			<span class="comment"># 写点文字到图上去</span></span><br><span class="line">			cv2.putText(frame, <span class="string">&quot;id:&#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">int</span>(det_labels[idx])), </span><br><span class="line">						(<span class="built_in">int</span>(det_bbox[<span class="number">0</span>]*width / <span class="number">640</span> + <span class="number">5</span>),<span class="built_in">int</span>(det_bbox[<span class="number">1</span>]*width / <span class="number">640</span> + <span class="number">15</span>)),</span><br><span class="line">						cv2.FONT_HERSHEY_SIMPLEX, <span class="number">0.5</span>, color_map[::-<span class="number">1</span>], <span class="number">2</span>)</span><br><span class="line">			cv2.putText(frame, <span class="string">&quot;score:&#123;:2.1f&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">int</span>(det_labels[idx])), </span><br><span class="line">						(<span class="built_in">int</span>(det_bbox[<span class="number">0</span>]*width / <span class="number">640</span> + <span class="number">5</span>),<span class="built_in">int</span>(det_bbox[<span class="number">1</span>]*width / <span class="number">640</span> + <span class="number">30</span>)),</span><br><span class="line">						cv2.FONT_HERSHEY_SIMPLEX, <span class="number">0.5</span>, color_map[::-<span class="number">1</span>], <span class="number">2</span>)</span><br><span class="line">			<span class="comment"># 关键点需要重新定位，kpt是一个51个元素的array，（x, y, conf）排列，处理感觉好麻烦</span></span><br><span class="line">			<span class="comment"># 感觉实时的话，这里真会浪费很多时间，终于知道为啥要求640 x 640的视频了</span></span><br><span class="line">			plot_skeleton_kpts(frame, kpt)</span><br><span class="line">			</span><br><span class="line">			writer.write(frame)</span><br><span class="line">			<span class="keyword">if</span> camera_id != -<span class="number">1</span>:</span><br><span class="line">				cv2.imshow(<span class="string">&#x27;Mask Detection&#x27;</span>, frame)</span><br><span class="line">				<span class="keyword">if</span> cv2.waitKey(<span class="number">1</span>) &amp; <span class="number">0xFF</span> == <span class="built_in">ord</span>(<span class="string">&#x27;q&#x27;</span>): <span class="keyword">break</span></span><br><span class="line">		writer.release()	</span><br></pre></td></tr></table></figure>
+<p>大致上是写完了，但是我还没有测试过，明天再测试吧。</p>
+<p>总结一下要传入的参数有：<code>score_threshold</code>，<code>model_path</code>，<code>camera_id</code>，<code>video_file</code>，<code>output_dir</code>，感觉也不是很多的样子。</p>
+<p>测试已经完成了，能够正常的输出实时的视频。还顺便修了一下非<code>(640x640)</code>视频输入，关键点和识别框标注偏移的问题。</p>
+<p>完整的函数代码我放在下面：</p>
+<h2 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">video_inference</span>(<span class="params">model_path, video_file, camera_id, output_dir, score_threshold=<span class="number">0.3</span></span>):</span><br><span class="line">    video_name = <span class="string">&#x27;output.mp4&#x27;</span> <span class="comment"># 先给个输出视频名字</span></span><br><span class="line">    <span class="keyword">if</span> camera_id != -<span class="number">1</span>:  </span><br><span class="line">        capture = cv2.VideoCapture(camera_id)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        video_name = os.path.split(video_file)[-<span class="number">1</span>]  <span class="comment"># 直接原文件名输出</span></span><br><span class="line">        capture = cv2.VideoCapture(video_file)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(output_dir):</span><br><span class="line">        os.makedirs(output_dir)</span><br><span class="line">    out_path = os.path.join(output_dir, video_name)</span><br><span class="line"></span><br><span class="line">    width = <span class="built_in">int</span>(capture.get(cv2.CAP_PROP_FRAME_WIDTH))</span><br><span class="line">    height = <span class="built_in">int</span>(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))    </span><br><span class="line">    fps = <span class="built_in">int</span>(capture.get(cv2.CAP_PROP_FPS))</span><br><span class="line">    frame_count = <span class="built_in">int</span>(capture.get(cv2.CAP_PROP_FRAME_COUNT))</span><br><span class="line"></span><br><span class="line">    fourcc = cv2.VideoWriter_fourcc(* <span class="string">&#x27;mp4v&#x27;</span>)   <span class="comment"># 规定输出视频格式</span></span><br><span class="line">    writer= cv2.VideoWriter(out_path, fourcc, fps, (width, height))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;fps&#x27;</span>, fps)</span><br><span class="line">    start = time.time()</span><br><span class="line">    index = <span class="number">0</span> <span class="comment"># 用于记录帧数</span></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">        success, frame = capture.read() <span class="comment"># 一帧帧的读取，帧为bgr格式的</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> success: <span class="keyword">break</span></span><br><span class="line">        index += <span class="number">1</span></span><br><span class="line">        frame1 = frame</span><br><span class="line">        <span class="comment"># 将frame输入网络中，在这之前，我们要对frame进行一些图象预处理</span></span><br><span class="line">        <span class="comment"># 和read_img的操作一样，直接抄过来就好了</span></span><br><span class="line">        <span class="comment"># 将img_mean和img_scale都直接用实数表示了</span></span><br><span class="line">        img = frame1[:,:,::-<span class="number">1</span>]   <span class="comment"># bgr-&gt;rgb，对通道进行翻转</span></span><br><span class="line">        <span class="comment"># 图片被线性拉伸或者压缩了，后面要进行坐标的重新映射</span></span><br><span class="line">        img = cv2.resize(img, (<span class="number">640</span>, <span class="number">640</span>), interpolation=cv2.INTER_LINEAR)</span><br><span class="line">        img = (img - <span class="number">127.5</span>) * (<span class="number">1</span>/<span class="number">127.5</span>)         <span class="comment"># 像素归一化</span></span><br><span class="line">        img = np.asarray(img, dtype=np.float32) <span class="comment"># 转成float32位的数组</span></span><br><span class="line">        img = np.expand_dims(img, <span class="number">0</span>)            <span class="comment"># 在axis=0处加入一个维度，img.shape=(1,640,640,3)</span></span><br><span class="line">        frame1 = img.transpose(<span class="number">0</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">2</span>)          <span class="comment"># 调整维度顺序：（batchsize，channel，height，width）</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 因为也是一张张的传进去推理的，所以batchsize=1</span></span><br><span class="line">        output = model_inference(model_path, frame1) <span class="comment"># 这意味着，参数里也要有model_path</span></span><br><span class="line">        <span class="comment"># 判断该帧是否有目标，没有目标的话，就直接原样输出该帧</span></span><br><span class="line">        <span class="keyword">if</span> output[<span class="number">0</span>].shape[<span class="number">0</span>] == <span class="number">0</span>:</span><br><span class="line">            writer.write(frame)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;detect frame:&#123;&#125;, &#123;&#125; targets&#x27;</span>.<span class="built_in">format</span>(index, output[<span class="number">0</span>].shape[<span class="number">0</span>]))</span><br><span class="line">        <span class="comment"># 有目标的话就对图片进行后处理</span></span><br><span class="line">        det_bboxes = output[<span class="number">0</span>][:, <span class="number">0</span>:<span class="number">4</span>]</span><br><span class="line">        det_scores = output[<span class="number">0</span>][:, <span class="number">4</span>]</span><br><span class="line">        det_labels = output[<span class="number">0</span>][:, <span class="number">5</span>]</span><br><span class="line">        kpts = output[<span class="number">0</span>][:, <span class="number">6</span>:]</span><br><span class="line">        <span class="keyword">for</span> idx <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(det_bboxes)):</span><br><span class="line">            det_bbox = det_bboxes[idx]      <span class="comment"># 选取一个目标的检测框</span></span><br><span class="line">            kpt = kpts[idx]                 <span class="comment"># 选取其对应的关键点数据</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(kpt)):</span><br><span class="line">                <span class="keyword">if</span> i % <span class="number">3</span> == <span class="number">0</span>: </span><br><span class="line">                    kpt[i] = (kpt[i] * width) / <span class="number">640</span></span><br><span class="line">                <span class="keyword">if</span> i % <span class="number">3</span> == <span class="number">1</span>: </span><br><span class="line">                    kpt[i] = (kpt[i] * height) / <span class="number">640</span></span><br><span class="line">            <span class="keyword">if</span> det_scores[idx] &gt; score_threshold: <span class="comment"># 参数列表里还得有score_threshold</span></span><br><span class="line">                color_map = _CLASS_COLOR_MAP[<span class="built_in">int</span>(det_labels[idx])]</span><br><span class="line">                <span class="comment"># 这里要对坐标进行转换，已知视频的height和width，变换后为640，可知：</span></span><br><span class="line">                <span class="comment"># 真实坐标truth = now * original_size / 640</span></span><br><span class="line">                <span class="comment"># 画识别框</span></span><br><span class="line">                start_point = (<span class="built_in">round</span>(det_bbox[<span class="number">0</span>]*width / <span class="number">640</span>), <span class="built_in">round</span>(det_bbox[<span class="number">1</span>]*height / <span class="number">640</span>))</span><br><span class="line">                end_point = (<span class="built_in">round</span>(det_bbox[<span class="number">2</span>]*width / <span class="number">640</span>), <span class="built_in">round</span>(det_bbox[<span class="number">3</span>]*height / <span class="number">640</span>))</span><br><span class="line">                frame = cv2.rectangle(frame, start_point, end_point, color_map[::-<span class="number">1</span>],<span class="number">2</span>)</span><br><span class="line">                <span class="comment"># 写点文字到图上去</span></span><br><span class="line">                cv2.putText(frame, <span class="string">&quot;id:&#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">int</span>(det_labels[idx])), </span><br><span class="line">                            (<span class="built_in">int</span>(det_bbox[<span class="number">0</span>]*width / <span class="number">640</span> + <span class="number">5</span>),<span class="built_in">int</span>(det_bbox[<span class="number">1</span>]*width / <span class="number">640</span> + <span class="number">15</span>)),</span><br><span class="line">                            cv2.FONT_HERSHEY_SIMPLEX, <span class="number">0.5</span>, color_map[::-<span class="number">1</span>], <span class="number">2</span>)</span><br><span class="line">                cv2.putText(frame, <span class="string">&quot;class:&#123;:2.1f&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">int</span>(det_labels[idx])), </span><br><span class="line">                            (<span class="built_in">int</span>(det_bbox[<span class="number">0</span>]*width / <span class="number">640</span> + <span class="number">5</span>),<span class="built_in">int</span>(det_bbox[<span class="number">1</span>]*width / <span class="number">640</span> + <span class="number">30</span>)),</span><br><span class="line">                            cv2.FONT_HERSHEY_SIMPLEX, <span class="number">0.5</span>, color_map[::-<span class="number">1</span>], <span class="number">2</span>)</span><br><span class="line">                <span class="comment"># 关键点需要重新定位，kpt是一个51个元素的array，（x, y, conf）排列，处理感觉好麻烦</span></span><br><span class="line">                <span class="comment"># 感觉实时的话，这里真会浪费很多时间，终于知道为啥要求640 x 640的视频了</span></span><br><span class="line">                plot_skeleton_kpts(frame, kpt)</span><br><span class="line">        writer.write(frame)</span><br><span class="line">        <span class="keyword">if</span> camera_id != -<span class="number">1</span>:</span><br><span class="line">            cv2.namedWindow(<span class="string">&#x27;Mask Detection&#x27;</span>, <span class="number">0</span>)</span><br><span class="line">            cv2.imshow(<span class="string">&#x27;Mask Detection&#x27;</span>, frame)</span><br><span class="line">            <span class="keyword">if</span> cv2.waitKey(<span class="number">1</span>) &amp; <span class="number">0xFF</span> == <span class="built_in">ord</span>(<span class="string">&#x27;q&#x27;</span>): <span class="keyword">break</span></span><br><span class="line">    writer.release()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;times:&quot;</span>, time.time() - start)</span><br></pre></td></tr></table></figure>
+
+<p>直接在<code>main()</code>函数里面调用就行了。输入视频文件和摄像头都行。</p>
+<p>如果大家有什么不了解的地方，尽管提问，一起进步，也希望大家多多拷打我。</p>
+<p>大家随意转载，但是如果能把我这连接带上最好了！</p>
+<p>下一篇会写一下YOLOpose的pytorch推理。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%88%E8%B7%91%E4%B8%80%E4%B8%8Bdemo"><span class="toc-number">2.</span> <span class="toc-text">先跑一下demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="toc-number">3.</span> <span class="toc-text">模型的输入输出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5"><span class="toc-number">3.1.</span> <span class="toc-text">输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA"><span class="toc-number">3.2.</span> <span class="toc-text">输出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YoloPose%E8%A7%86%E9%A2%91%E6%8E%A8%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">YoloPose视频推理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E8%A7%86%E9%A2%91"><span class="toc-number">4.1.</span> <span class="toc-text">输入视频</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E4%BF%A1%E6%81%AF"><span class="toc-number">4.2.</span> <span class="toc-text">获取视频信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E8%A7%86%E9%A2%91%E9%85%8D%E7%BD%AE"><span class="toc-number">4.3.</span> <span class="toc-text">输出视频配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%90%E5%B8%A7%E5%A4%84%E7%90%86"><span class="toc-number">4.4.</span> <span class="toc-text">逐帧处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">5.</span> <span class="toc-text">完整代码</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/29/YoloPose/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/29/YoloPose/&text=YoloPose onnx 视频推理"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/29/YoloPose/&is_video=false&description=YoloPose onnx 视频推理"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=YoloPose onnx 视频推理&body=Check out this article: http://example.com/2022/07/29/YoloPose/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/29/YoloPose/&name=YoloPose onnx 视频推理&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/29/YoloPose/&t=YoloPose onnx 视频推理"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    Jiangnan CAI
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="http://github.com/probberechts">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
