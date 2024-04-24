@@ -8,16 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <meta name="description" content="前言最近因为某些原因，要搞行为识别（action recognition），刚好看了YoloPose这篇文章，但是网上看到的中文资料不多，基本都是一篇文章复制粘贴，所以在这里抛砖引玉，写一篇从头开始接触的笔记。 现在源码前端时间已经在github上开源了：YoloPose 但是一开始我直接以git clone的方式下载源码，发现只能够下载到Yolov5的源码，里面没有任何和YoloPose相关的文">
 <meta property="og:type" content="article">
-<meta property="og:title" content="YoloPose onnx 视频推理">
-<meta property="og:url" content="http://example.com/2022/07/29/YoloPose/index.html">
+<meta property="og:title" content="🖥️ YoloPose onnx 视频推理">
+<meta property="og:url" content="http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/index.html">
 <meta property="og:site_name" content="Kohlkopf no Qzone">
 <meta property="og:description" content="前言最近因为某些原因，要搞行为识别（action recognition），刚好看了YoloPose这篇文章，但是网上看到的中文资料不多，基本都是一篇文章复制粘贴，所以在这里抛砖引玉，写一篇从头开始接触的笔记。 现在源码前端时间已经在github上开源了：YoloPose 但是一开始我直接以git clone的方式下载源码，发现只能够下载到Yolov5的源码，里面没有任何和YoloPose相关的文">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-07-29T07:17:02.000Z">
-<meta property="article:modified_time" content="2022-07-29T08:34:15.120Z">
+<meta property="article:modified_time" content="2024-04-24T14:21:28.601Z">
 <meta property="article:author" content="Jiangnan CAI">
 <meta property="article:tag" content="深度学习">
-<meta property="article:tag" content="计算机视觉">
 <meta property="article:tag" content="姿态识别">
 <meta name="twitter:card" content="summary">
     
@@ -39,7 +38,7 @@
       
     
     <!-- title -->
-    <title>YoloPose onnx 视频推理</title>
+    <title>🖥️ YoloPose onnx 视频推理</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -101,17 +100,17 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/29/YoloPose/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/29/YoloPose/&text=YoloPose onnx 视频推理"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/29/YoloPose/&is_video=false&description=YoloPose onnx 视频推理"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=YoloPose onnx 视频推理&body=Check out this article: http://example.com/2022/07/29/YoloPose/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/29/YoloPose/&name=YoloPose onnx 视频推理&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/29/YoloPose/&t=YoloPose onnx 视频推理"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&text=🖥️ YoloPose onnx 视频推理"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&is_video=false&description=🖥️ YoloPose onnx 视频推理"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=🖥️ YoloPose onnx 视频推理&body=Check out this article: http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&name=🖥️ YoloPose onnx 视频推理&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&t=🖥️ YoloPose onnx 视频推理"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -131,7 +130,7 @@
   <header>
     
     <h1 class="posttitle p-name" itemprop="name headline">
-        YoloPose onnx 视频推理
+        🖥️ YoloPose onnx 视频推理
     </h1>
 
 
@@ -154,7 +153,7 @@
       
     <div class="article-tag">
         <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/%E5%A7%BF%E6%80%81%E8%AF%86%E5%88%AB/" rel="tag">姿态识别</a>, <a class="p-category" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a>, <a class="p-category" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag">计算机视觉</a>
+        <a class="p-category" href="/tags/%E5%A7%BF%E6%80%81%E8%AF%86%E5%88%AB/" rel="tag">姿态识别</a>, <a class="p-category" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag">深度学习</a>
     </div>
 
 
@@ -260,17 +259,17 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/29/YoloPose/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/29/YoloPose/&text=YoloPose onnx 视频推理"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/29/YoloPose/&is_video=false&description=YoloPose onnx 视频推理"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=YoloPose onnx 视频推理&body=Check out this article: http://example.com/2022/07/29/YoloPose/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/29/YoloPose/&title=YoloPose onnx 视频推理"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/29/YoloPose/&name=YoloPose onnx 视频推理&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/29/YoloPose/&t=YoloPose onnx 视频推理"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&text=🖥️ YoloPose onnx 视频推理"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&is_video=false&description=🖥️ YoloPose onnx 视频推理"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=🖥️ YoloPose onnx 视频推理&body=Check out this article: http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&title=🖥️ YoloPose onnx 视频推理"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&name=🖥️ YoloPose onnx 视频推理&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2022/07/29/%E3%80%8C%E6%8A%80%E6%9C%AF%E3%80%8DYoloPose/&t=🖥️ YoloPose onnx 视频推理"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
